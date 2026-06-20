@@ -43,3 +43,43 @@ body {
     opacity: 1;
   }
 }
+
+@keyframes wwTypewriter {
+  from {
+    width: 0;
+  }
+  to {
+    width: 28ch;
+  }
+}
+
+@keyframes wwBlinkUnderscore {
+  from,
+  to {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes wwQuotePulse {
+  0% {
+    color: #cbb2bb;
+    text-shadow: none;
+  }
+  15% {
+    color: #f0567f;
+    text-shadow: 0 0 20px rgba(240, 86, 127, 0.7),
+      0 0 40px rgba(240, 86, 127, 0.4), 0 0 60px rgba(240, 86, 127, 0.2);
+  }
+  40% {
+    color: #f0567f;
+    text-shadow: 0 0 14px rgba(240, 86, 127, 0.5),
+      0 0 30px rgba(240, 86, 127, 0.25);
+  }
+  100% {
+    color: #cbb2bb;
+    text-shadow: none;
+  }
+}
