@@ -485,6 +485,108 @@ function SyncedLyrics({ lyrics, currentTime, playing }: { lyrics: LrcLine[]; cur
   );
 }
 
+// ─── right-side glass panel with project origin story ───
+function RightPanel() {
+  const [collapsed, setCollapsed] = useState(true);
+
+  return (
+    <div style={{
+      position: "absolute",
+      right: "clamp(30px, 3.4vw, 56px)",
+      top: "50%",
+      transform: "translateY(-50%)",
+      zIndex: 12,
+      pointerEvents: "auto",
+    }}>
+      {/* collapsed: grid-sized square button */}
+      <div style={{
+        width: 48,
+        height: 48,
+        borderRadius: 10,
+        background: "linear-gradient(155deg, rgba(255,255,255,0.65), rgba(255,248,251,0.42))",
+        backdropFilter: "blur(24px) saturate(180%)",
+        WebkitBackdropFilter: "blur(24px) saturate(180%)",
+        border: "1px solid rgba(255,255,255,0.8)",
+        boxShadow: "0 8px 22px -10px rgba(150,110,135,0.28), inset 0 1px 0 rgba(255,255,255,0.95), inset 0 -1px 0 rgba(200,170,185,0.15)",
+        cursor: "pointer",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        position: "absolute",
+        top: "50%",
+        right: 0,
+        transform: "translateY(-50%)",
+        opacity: collapsed ? 1 : 0,
+        scale: collapsed ? "1" : "0.8",
+        transition: "opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), scale 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+        pointerEvents: collapsed ? "auto" : "none",
+      }}
+        onClick={() => setCollapsed(false)}
+      >
+        <PixelArt motif="heart" px={3} color="#f0567f" />
+      </div>
+
+      {/* expanded panel */}
+      <div style={{
+        maxWidth: 280,
+        opacity: collapsed ? 0 : 1,
+        scale: collapsed ? "0.9" : "1",
+        transform: collapsed ? "translateX(20px)" : "translateX(0)",
+        transition: "opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), scale 0.45s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1)",
+        pointerEvents: collapsed ? "none" : "auto",
+      }}>
+        <div style={{
+          position: "relative",
+          background: "linear-gradient(155deg, rgba(255,255,255,0.55), rgba(255,248,251,0.32))",
+          backdropFilter: "blur(32px) saturate(180%)",
+          WebkitBackdropFilter: "blur(32px) saturate(180%)",
+          border: "1px solid rgba(255,255,255,0.78)",
+          boxShadow: "0 18px 44px -22px rgba(150,110,135,0.3), inset 0 1px 0 rgba(255,255,255,0.92), inset 0 -1px 0 rgba(200,170,185,0.12)",
+          borderRadius: 20,
+          padding: "20px 24px",
+        }}>
+          {/* pink collapse circle at top-left corner */}
+          <div
+            onClick={() => setCollapsed(true)}
+            style={{
+              position: "absolute",
+              top: -8,
+              left: -8,
+              width: 24,
+              height: 24,
+              borderRadius: "50%",
+              background: "#f0567f",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: "0 4px 12px -4px rgba(240,86,127,0.5)",
+              transition: "transform 0.2s ease",
+              zIndex: 2,
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.15)")}
+            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+          >
+            <div style={{ width: 8, height: 1.5, background: "#fff", borderRadius: 1 }} />
+          </div>
+
+          <p style={{
+            fontFamily: "var(--font-space-grotesk), sans-serif",
+            fontSize: 13,
+            fontWeight: 400,
+            color: "#5a4a52",
+            lineHeight: 1.7,
+            letterSpacing: "0.02em",
+            margin: 0,
+          }}>
+            the idea entered my head, when i saw a woman with a white iPhone and a pink suction cover. very pretty colors init? :p
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── glass iPod player with smooth animation ───
 function Player({
   track, elapsed, duration, playing, open,
@@ -1249,6 +1351,9 @@ export default function Scene() {
 
         {/* LEFT CENTER: synced lyrics */}
         <SyncedLyrics lyrics={track.lyrics} currentTime={currentTime} playing={playing} />
+
+        {/* RIGHT CENTER: project origin */}
+        <RightPanel />
 
         {/* BOTTOM LEFT: minimal caption */}
         <div style={{
