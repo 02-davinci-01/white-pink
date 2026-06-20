@@ -347,12 +347,12 @@ function SyncedLyrics({ lyrics, currentTime, playing }: { lyrics: LrcLine[]; cur
   return (
     <div style={{
       position: "absolute",
-      left: "var(--pad-x)",
+      left: "clamp(30px, 3.4vw, 56px)",
       top: "50%",
       transform: "translateY(-50%)",
       zIndex: 12,
       pointerEvents: "auto",
-    }} className="lyrics-area">
+    }}>
       {/* collapsed: grid-sized square button */}
       <div style={{
         width: 48,
@@ -383,7 +383,7 @@ function SyncedLyrics({ lyrics, currentTime, playing }: { lyrics: LrcLine[]; cur
 
       {/* expanded panel */}
       <div style={{
-        maxWidth: "var(--lyrics-panel-maxw)",
+        maxWidth: 300,
         opacity: collapsed ? 0 : 1,
         scale: collapsed ? "0.9" : "1",
         transform: collapsed ? "translateX(-20px)" : "translateX(0)",
@@ -492,12 +492,12 @@ function RightPanel() {
   return (
     <div style={{
       position: "absolute",
-      right: "var(--pad-x)",
+      right: "clamp(30px, 3.4vw, 56px)",
       top: "50%",
       transform: "translateY(-50%)",
       zIndex: 12,
       pointerEvents: "auto",
-    }} className="right-panel-area">
+    }}>
       {/* collapsed: grid-sized square button */}
       <div style={{
         width: 48,
@@ -528,7 +528,7 @@ function RightPanel() {
 
       {/* expanded panel */}
       <div style={{
-        maxWidth: "var(--right-panel-maxw)",
+        maxWidth: 280,
         opacity: collapsed ? 0 : 1,
         scale: collapsed ? "0.9" : "1",
         transform: collapsed ? "translateX(20px)" : "translateX(0)",
@@ -1301,41 +1301,41 @@ export default function Scene() {
       <div style={{ position: "absolute", inset: 0, zIndex: 10, pointerEvents: "none" }}>
 
         {/* TOP LEFT: pink square + title */}
-        <div className="title-block" style={{ position: "absolute", top: "var(--pad-top)", left: "var(--pad-x)" }}>
-          <span style={{ width: "var(--pink-square-size)", height: "var(--pink-square-size)", background: "#f0567f", display: "block", marginBottom: 14 }} />
+        <div style={{ position: "absolute", top: "clamp(28px,4.4vh,48px)", left: "clamp(30px,3.4vw,56px)" }}>
+          <span style={{ width: 13, height: 13, background: "#f0567f", display: "block", marginBottom: 14 }} />
           <h1 style={{
             fontFamily: "var(--font-space-grotesk), sans-serif",
-            fontSize: "var(--title-size)", fontWeight: 600,
+            fontSize: "clamp(28px,3.8vw,48px)", fontWeight: 600,
             lineHeight: 1, color: "#2a2226", margin: 0, letterSpacing: "-0.02em",
           }}>
             wWHIT<span style={{ display: "inline-block", transform: "scaleX(-1)" }}>e</span>{" "}
             <span style={{ color: "#f0567f" }}>+</span> PINk
           </h1>
           {/* vertical kanji */}
-          <div className="kanji-text" style={{
+          <div style={{
             writingMode: "vertical-rl",
             fontFamily: "var(--font-shippori), serif",
-            fontSize: "var(--kanji-size)", letterSpacing: "0.42em",
-            color: "#d4c0c8", marginTop: "var(--kanji-mt)", userSelect: "none",
+            fontSize: "clamp(13px,1.2vw,17px)", letterSpacing: "0.42em",
+            color: "#d4c0c8", marginTop: 28, userSelect: "none",
           }}>
             空のフレーム
           </div>
         </div>
 
         {/* TOP CENTER: nav glyphs */}
-        <div className="nav-glyphs" style={{
-          position: "absolute", top: "var(--pad-top)", left: "50%", transform: "translateX(-50%)",
-          display: "flex", alignItems: "center", gap: "var(--glyph-gap)", color: "#d6c5cc",
+        <div style={{
+          position: "absolute", top: "clamp(30px,4.4vh,48px)", left: "50%", transform: "translateX(-50%)",
+          display: "flex", alignItems: "center", gap: 20, color: "#d6c5cc",
         }}>
-          <span style={{ width: "var(--pink-square-size)", height: "var(--pink-square-size)", background: "#f7b9cb", display: "inline-block" }} />
-          <span style={{ fontSize: "var(--glyph-size)" }}>▦</span>
-          <span style={{ fontSize: "var(--glyph-size)" }}>◯</span>
-          <span style={{ fontSize: "var(--glyph-size)" }}>✕</span>
+          <span style={{ width: 9, height: 9, background: "#f7b9cb", display: "inline-block" }} />
+          <span style={{ fontSize: 12 }}>▦</span>
+          <span style={{ fontSize: 12 }}>◯</span>
+          <span style={{ fontSize: 12 }}>✕</span>
         </div>
 
         {/* TOP RIGHT: iPod player */}
-        <div className="player-area" style={{
-          position: "absolute", top: "var(--pad-top)", right: "var(--pad-x)",
+        <div style={{
+          position: "absolute", top: "clamp(28px,4.4vh,46px)", right: "clamp(30px,3.4vw,56px)",
           display: "flex", flexDirection: "column", alignItems: "flex-end",
           pointerEvents: "auto",
         }}>
@@ -1356,19 +1356,19 @@ export default function Scene() {
         <RightPanel />
 
         {/* BOTTOM LEFT: minimal caption */}
-        <div className="bottom-left" style={{
-          position: "absolute", bottom: "var(--pad-bottom)", left: "var(--pad-x)",
-          fontFamily: "var(--font-space-mono), monospace", fontSize: "var(--bottom-text-size)",
+        <div style={{
+          position: "absolute", bottom: "clamp(30px,5vh,54px)", left: "clamp(30px,3.4vw,56px)",
+          fontFamily: "var(--font-space-mono), monospace", fontSize: 10,
           letterSpacing: "0.34em", color: "#cbb2bb", lineHeight: 1.9,
         }}>
           TESTAROSSA<br />· WHITE ·
         </div>
 
         {/* quote */}
-        <div className="quote-area" style={{
-          position: "absolute", bottom: "var(--pad-bottom)", left: "50%", transform: "translateX(-50%)",
+        <div style={{
+          position: "absolute", bottom: "clamp(30px,5vh,54px)", left: "50%", transform: "translateX(-50%)",
           fontFamily: "var(--font-space-mono), monospace",
-          fontSize: "var(--quote-size)",
+          fontSize: "clamp(8px, 1vw, 11px)",
           letterSpacing: "0.18em", color: "#cbb2bb", textAlign: "center",
         }}>
           <span key={quotePulseKey} style={{
@@ -1380,17 +1380,17 @@ export default function Scene() {
         </div>
 
         {/* BOTTOM RIGHT: ON AIR */}
-        <div className="onair-area" style={{ position: "absolute", bottom: "var(--pad-bottom)", right: "var(--pad-x)", pointerEvents: "auto" }}>
+        <div style={{ position: "absolute", bottom: "clamp(32px,5.2vh,56px)", right: "clamp(30px,3.4vw,58px)", pointerEvents: "auto" }}>
           <div style={{
-            display: "inline-flex", alignItems: "center", gap: "var(--onair-gap)",
-            padding: "var(--onair-pad)", borderRadius: 100,
+            display: "inline-flex", alignItems: "center", gap: 10,
+            padding: "10px 20px", borderRadius: 100,
             background: "rgba(255,255,255,0.6)",
             backdropFilter: "blur(16px) saturate(150%)", WebkitBackdropFilter: "blur(16px) saturate(150%)",
             border: "1px solid rgba(255,255,255,0.85)",
             boxShadow: "0 10px 24px -14px rgba(170,120,145,0.35)",
           }}>
-            <span style={{ width: "var(--onair-blob)", height: "var(--onair-blob)", borderRadius: "50%", background: "#f0567f", display: "inline-block", animation: "wwBlink 1.6s steps(1) infinite" }} />
-            <span style={{ fontFamily: "var(--font-space-mono), monospace", fontSize: "var(--onair-font)", letterSpacing: "0.36em", color: "#9a838e" }}>ON AIR</span>
+            <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#f0567f", display: "inline-block", animation: "wwBlink 1.6s steps(1) infinite" }} />
+            <span style={{ fontFamily: "var(--font-space-mono), monospace", fontSize: 10, letterSpacing: "0.36em", color: "#9a838e" }}>ON AIR</span>
           </div>
         </div>
       </div>
