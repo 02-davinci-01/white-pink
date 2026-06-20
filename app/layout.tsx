@@ -21,8 +21,8 @@ const shipporiMincho = Shippori_Mincho({
 });
 
 export const metadata: Metadata = {
-  title: "wWHITe + PINk",
-  description: "A reflection on love, grief & the inescapable sorrow of loving.",
+  title: "wWHITɘ + PINk",
+  description: "all grief is a window of memory",
 };
 
 export default function RootLayout({

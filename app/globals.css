@@ -13,6 +13,120 @@ body {
   background: #fdfafb;
 }
 
+/* ─── responsive custom properties ─── */
+:root {
+  --pad-x: clamp(30px, 3.4vw, 56px);
+  --pad-top: clamp(28px, 4.4vh, 48px);
+  --pad-bottom: clamp(30px, 5vh, 54px);
+  --title-size: clamp(28px, 3.8vw, 48px);
+  --kanji-size: clamp(13px, 1.2vw, 17px);
+  --kanji-mt: 28px;
+  --bottom-text-size: 10px;
+  --quote-size: clamp(8px, 1vw, 11px);
+  --glyph-size: 12px;
+  --glyph-gap: 20px;
+  --onair-pad: 10px 20px;
+  --onair-gap: 10px;
+  --onair-blob: 7px;
+  --onair-font: 10px;
+  --pink-square-size: 13px;
+  --lyrics-panel-maxw: 300px;
+  --right-panel-maxw: 280px;
+}
+
+@media (max-width: 640px) {
+  :root {
+    --pad-x: 14px;
+    --pad-top: 14px;
+    --pad-bottom: 10px;
+    --title-size: clamp(20px, 7.5vw, 30px);
+    --kanji-size: 10px;
+    --kanji-mt: 12px;
+    --bottom-text-size: 7px;
+    --quote-size: 7px;
+    --glyph-size: 10px;
+    --glyph-gap: 10px;
+    --onair-pad: 6px 12px;
+    --onair-gap: 6px;
+    --onair-blob: 5px;
+    --onair-font: 8px;
+    --pink-square-size: 9px;
+    --lyrics-panel-maxw: 220px;
+    --right-panel-maxw: 200px;
+  }
+
+  /* mobile: hide nav glyphs */
+  .nav-glyphs {
+    display: none !important;
+  }
+
+  /* mobile: stack title block tighter */
+  .title-block {
+    top: var(--pad-top) !important;
+    left: var(--pad-x) !important;
+  }
+
+  /* mobile: player – smaller pill, move below title on very narrow */
+  .player-area {
+    top: var(--pad-top) !important;
+    right: var(--pad-x) !important;
+  }
+
+  /* mobile: center panels – tighter to edges, smaller max-widths via vars */
+  .lyrics-area {
+    left: var(--pad-x) !important;
+  }
+  .right-panel-area {
+    right: var(--pad-x) !important;
+  }
+
+  /* mobile: bottom-left caption */
+  .bottom-left {
+    bottom: var(--pad-bottom) !important;
+    left: var(--pad-x) !important;
+  }
+
+  /* mobile: quote – smaller, lower */
+  .quote-area {
+    bottom: var(--pad-bottom) !important;
+  }
+
+  /* mobile: ON AIR pill smaller */
+  .onair-area {
+    bottom: var(--pad-bottom) !important;
+    right: var(--pad-x) !important;
+  }
+}
+
+/* ─── very small phones (< 380px) ─── */
+@media (max-width: 380px) {
+  :root {
+    --pad-x: 10px;
+    --pad-top: 10px;
+    --pad-bottom: 8px;
+    --title-size: 18px;
+    --kanji-size: 9px;
+    --kanji-mt: 8px;
+    --bottom-text-size: 6px;
+    --quote-size: 6px;
+    --glyph-size: 8px;
+    --glyph-gap: 6px;
+    --onair-pad: 5px 10px;
+    --onair-gap: 5px;
+    --onair-blob: 4px;
+    --onair-font: 7px;
+    --pink-square-size: 7px;
+    --lyrics-panel-maxw: 170px;
+    --right-panel-maxw: 155px;
+  }
+
+  /* hide kanji on tiny screens to free vertical space */
+  .kanji-text {
+    display: none !important;
+  }
+}
+
+/* ─── keyframes ─── */
 @keyframes wwBlink {
   0%,
   55% {
