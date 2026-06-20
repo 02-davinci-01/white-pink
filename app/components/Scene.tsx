@@ -314,7 +314,6 @@ const MOTIF_KEYS: Motif[] = ["heart", "wave", "car", "flower", "petal"];
 // ─── synced lyrics / instrumental art component ───
 function SyncedLyrics({ lyrics, currentTime, playing }: { lyrics: LrcLine[]; currentTime: number; playing: boolean }) {
   const [collapsed, setCollapsed] = useState(true);
-  const hasAutoOpened = useRef(false);
   const [instrumentalMotif, setInstrumentalMotif] = useState(0);
 
   useEffect(() => {
@@ -324,9 +323,10 @@ function SyncedLyrics({ lyrics, currentTime, playing }: { lyrics: LrcLine[]; cur
   }, [lyrics.length]);
 
   useEffect(() => {
-    if (playing && !hasAutoOpened.current) {
+    if (playing) {
       setCollapsed(false);
-      hasAutoOpened.current = true;
+    } else {
+      setCollapsed(true);
     }
   }, [playing]);
 
