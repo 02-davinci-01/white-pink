@@ -5,6 +5,18 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, useGLTF, ContactShadows } from "@react-three/drei";
 import * as THREE from "three";
 
+function useIsMobile(breakpoint = 768) {
+  const [mobile, setMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${breakpoint}px)`);
+    setMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, [breakpoint]);
+  return mobile;
+}
+
 // ─── LRC lyrics data ───
 type LrcLine = { time: number; text: string };
 
@@ -312,7 +324,7 @@ function fmt(s: number) {
 const MOTIF_KEYS: Motif[] = ["heart", "wave", "car", "flower", "petal"];
 
 // ─── synced lyrics / instrumental art component ───
-function SyncedLyrics({ lyrics, currentTime, playing }: { lyrics: LrcLine[]; currentTime: number; playing: boolean }) {
+function SyncedLyrics({ lyrics, currentTime, playing, mobile }: { lyrics: LrcLine[]; currentTime: number; playing: boolean; mobile: boolean }) {
   const [collapsed, setCollapsed] = useState(true);
   const [instrumentalMotif, setInstrumentalMotif] = useState(0);
 
@@ -347,16 +359,17 @@ function SyncedLyrics({ lyrics, currentTime, playing }: { lyrics: LrcLine[]; cur
   return (
     <div style={{
       position: "absolute",
-      left: "clamp(30px, 3.4vw, 56px)",
-      top: "50%",
-      transform: "translateY(-50%)",
+      ...(mobile
+        ? { left: 16, bottom: 90, top: "auto", transform: "none" }
+        : { left: "clamp(30px, 3.4vw, 56px)", top: "50%", transform: "translateY(-50%)" }
+      ),
       zIndex: 12,
       pointerEvents: "auto",
     }}>
       {/* collapsed: grid-sized square button */}
       <div style={{
-        width: 48,
-        height: 48,
+        width: mobile ? 40 : 48,
+        height: mobile ? 40 : 48,
         borderRadius: 10,
         background: "linear-gradient(155deg, rgba(255,255,255,0.6), rgba(255,248,251,0.4))",
         backdropFilter: "blur(20px) saturate(160%)",
@@ -368,9 +381,10 @@ function SyncedLyrics({ lyrics, currentTime, playing }: { lyrics: LrcLine[]; cur
         alignItems: "center",
         justifyContent: "center",
         position: "absolute",
-        top: "50%",
-        left: 0,
-        transform: "translateY(-50%)",
+        ...(mobile
+          ? { bottom: 0, left: 0 }
+          : { top: "50%", left: 0, transform: "translateY(-50%)" }
+        ),
         opacity: collapsed ? 1 : 0,
         scale: collapsed ? "1" : "0.8",
         transition: "opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), scale 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
@@ -378,12 +392,12 @@ function SyncedLyrics({ lyrics, currentTime, playing }: { lyrics: LrcLine[]; cur
       }}
         onClick={() => setCollapsed(false)}
       >
-        <PixelArt motif="flower" px={3} color="#f0567f" />
+        <PixelArt motif="flower" px={mobile ? 2.5 : 3} color="#f0567f" />
       </div>
 
       {/* expanded panel */}
       <div style={{
-        maxWidth: 300,
+        maxWidth: mobile ? 260 : 300,
         opacity: collapsed ? 0 : 1,
         scale: collapsed ? "0.9" : "1",
         transform: collapsed ? "translateX(-20px)" : "translateX(0)",
@@ -398,7 +412,7 @@ function SyncedLyrics({ lyrics, currentTime, playing }: { lyrics: LrcLine[]; cur
           border: "1px solid rgba(255,255,255,0.75)",
           boxShadow: "0 16px 40px -20px rgba(150,110,135,0.28), inset 0 1px 0 rgba(255,255,255,0.9)",
           borderRadius: 20,
-          padding: "20px 24px",
+          padding: mobile ? "16px 18px" : "20px 24px",
         }}>
           {/* pink collapse circle at top-right corner */}
           <div
@@ -437,7 +451,7 @@ function SyncedLyrics({ lyrics, currentTime, playing }: { lyrics: LrcLine[]; cur
                       key={line.time}
                       style={{
                         fontFamily: "var(--font-space-grotesk), sans-serif",
-                        fontSize: isActive ? 15 : 13,
+                        fontSize: isActive ? (mobile ? 13 : 15) : (mobile ? 11 : 13),
                         fontWeight: isActive ? 600 : 400,
                         color: isActive ? "#2a2226" : isPast ? "#cbb2bb" : "#a8929c",
                         opacity: isActive ? 1 : isPast ? 0.4 : 0.6,
@@ -486,22 +500,23 @@ function SyncedLyrics({ lyrics, currentTime, playing }: { lyrics: LrcLine[]; cur
 }
 
 // ─── right-side glass panel with project origin story ───
-function RightPanel() {
+function RightPanel({ mobile }: { mobile: boolean }) {
   const [collapsed, setCollapsed] = useState(true);
 
   return (
     <div style={{
       position: "absolute",
-      right: "clamp(30px, 3.4vw, 56px)",
-      top: "50%",
-      transform: "translateY(-50%)",
+      ...(mobile
+        ? { right: 16, bottom: 90, top: "auto", transform: "none" }
+        : { right: "clamp(30px, 3.4vw, 56px)", top: "50%", transform: "translateY(-50%)" }
+      ),
       zIndex: 12,
       pointerEvents: "auto",
     }}>
       {/* collapsed: grid-sized square button */}
       <div style={{
-        width: 48,
-        height: 48,
+        width: mobile ? 40 : 48,
+        height: mobile ? 40 : 48,
         borderRadius: 10,
         background: "linear-gradient(155deg, rgba(255,255,255,0.65), rgba(255,248,251,0.42))",
         backdropFilter: "blur(24px) saturate(180%)",
@@ -513,9 +528,10 @@ function RightPanel() {
         alignItems: "center",
         justifyContent: "center",
         position: "absolute",
-        top: "50%",
-        right: 0,
-        transform: "translateY(-50%)",
+        ...(mobile
+          ? { bottom: 0, right: 0 }
+          : { top: "50%", right: 0, transform: "translateY(-50%)" }
+        ),
         opacity: collapsed ? 1 : 0,
         scale: collapsed ? "1" : "0.8",
         transition: "opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), scale 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
@@ -523,12 +539,12 @@ function RightPanel() {
       }}
         onClick={() => setCollapsed(false)}
       >
-        <PixelArt motif="heart" px={3} color="#f0567f" />
+        <PixelArt motif="heart" px={mobile ? 2.5 : 3} color="#f0567f" />
       </div>
 
       {/* expanded panel */}
       <div style={{
-        maxWidth: 280,
+        maxWidth: mobile ? 240 : 280,
         opacity: collapsed ? 0 : 1,
         scale: collapsed ? "0.9" : "1",
         transform: collapsed ? "translateX(20px)" : "translateX(0)",
@@ -543,7 +559,7 @@ function RightPanel() {
           border: "1px solid rgba(255,255,255,0.78)",
           boxShadow: "0 18px 44px -22px rgba(150,110,135,0.3), inset 0 1px 0 rgba(255,255,255,0.92), inset 0 -1px 0 rgba(200,170,185,0.12)",
           borderRadius: 20,
-          padding: "20px 24px",
+          padding: mobile ? "16px 18px" : "20px 24px",
         }}>
           {/* pink collapse circle at top-left corner */}
           <div
@@ -590,10 +606,10 @@ function RightPanel() {
 // ─── glass iPod player with smooth animation ───
 function Player({
   track, elapsed, duration, playing, open,
-  onToggleOpen, onTogglePlay, onPrev, onNext, onCenterClick,
+  onToggleOpen, onTogglePlay, onPrev, onNext, onCenterClick, mobile,
 }: {
   track: (typeof TRACKS)[number]; elapsed: number; duration: number; playing: boolean; open: boolean;
-  onToggleOpen: () => void; onTogglePlay: () => void; onPrev: () => void; onNext: () => void; onCenterClick: () => void;
+  onToggleOpen: () => void; onTogglePlay: () => void; onPrev: () => void; onNext: () => void; onCenterClick: () => void; mobile?: boolean;
 }) {
   const prog = duration > 0 ? Math.min(1, elapsed / duration) : 0;
   const glass: React.CSSProperties = {
@@ -611,9 +627,9 @@ function Player({
         onClick={onToggleOpen}
         style={{
           ...glass,
-          display: "flex", alignItems: "center", gap: 13,
-          padding: "10px 16px 10px 12px", borderRadius: 100,
-          cursor: "pointer", width: 248,
+          display: "flex", alignItems: "center", gap: mobile ? 9 : 13,
+          padding: mobile ? "8px 12px 8px 10px" : "10px 16px 10px 12px", borderRadius: 100,
+          cursor: "pointer", width: mobile ? 200 : 248,
           opacity: open ? 0 : 1,
           transform: open ? "scale(0.95) translateY(8px)" : "scale(1) translateY(0)",
           transition: "opacity 0.35s ease, transform 0.35s ease",
@@ -621,17 +637,17 @@ function Player({
         }}
       >
         <div style={{
-          flex: "none", width: 30, height: 30, borderRadius: 9,
+          flex: "none", width: mobile ? 26 : 30, height: mobile ? 26 : 30, borderRadius: 9,
           display: "flex", alignItems: "center", justifyContent: "center",
           background: "rgba(255,255,255,0.7)", border: "1px solid rgba(255,255,255,0.8)",
         }}>
-          <PixelArt motif={track.motif} px={2} />
+          <PixelArt motif={track.motif} px={mobile ? 1.5 : 2} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontFamily: "var(--font-space-grotesk), sans-serif", fontWeight: 600, fontSize: 12, color: "#392d33", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", letterSpacing: "0.01em" }}>
+          <div style={{ fontFamily: "var(--font-space-grotesk), sans-serif", fontWeight: 600, fontSize: mobile ? 10 : 12, color: "#392d33", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", letterSpacing: "0.01em" }}>
             {track.title}
           </div>
-          <div style={{ fontFamily: "var(--font-space-mono), monospace", fontSize: 9, color: "#ab8a94", marginTop: 2 }}>
+          <div style={{ fontFamily: "var(--font-space-mono), monospace", fontSize: mobile ? 8 : 9, color: "#ab8a94", marginTop: 2 }}>
             {track.artist}
           </div>
         </div>
@@ -641,13 +657,17 @@ function Player({
       {/* expanded iPod */}
       <div style={{
         ...glass,
-        position: "absolute", top: 0, right: 0,
-        width: 232, borderRadius: 30, padding: "16px 16px 20px",
+        position: mobile ? "fixed" : "absolute",
+        ...(mobile
+          ? { top: "50%", left: "50%", transform: open ? "translate(-50%,-50%) scale(1)" : "translate(-50%,-50%) scale(0.92)", right: "auto" }
+          : { top: 0, right: 0, transform: open ? "scale(1) translateY(0)" : "scale(0.92) translateY(-12px)" }
+        ),
+        width: mobile ? 210 : 232, borderRadius: 30, padding: mobile ? "14px 14px 16px" : "16px 16px 20px",
         overflow: "hidden",
         opacity: open ? 1 : 0,
-        transform: open ? "scale(1) translateY(0)" : "scale(0.92) translateY(-12px)",
         transition: "opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
         pointerEvents: open ? "auto" : "none",
+        zIndex: mobile ? 100 : "auto",
       }}>
         <div style={{ position: "absolute", top: "-30%", left: "-15%", width: "60%", height: "55%", background: "radial-gradient(circle, rgba(255,255,255,0.55), transparent 70%)", pointerEvents: "none" }} />
         {/* header */}
@@ -687,8 +707,8 @@ function Player({
           </div>
         </div>
         {/* click wheel */}
-        <div style={{ display: "flex", justifyContent: "center", marginTop: 18 }}>
-          <div style={{ position: "relative", width: 132, height: 132, borderRadius: "50%", background: "radial-gradient(circle at 50% 38%, #ffffff, #f4edf0 72%, #ece2e7 100%)", boxShadow: "0 8px 18px -8px rgba(160,125,140,0.5), inset 0 1px 2px rgba(255,255,255,0.95), inset 0 -3px 8px rgba(175,145,160,0.2)" }}>
+        <div style={{ display: "flex", justifyContent: "center", marginTop: mobile ? 14 : 18 }}>
+          <div style={{ position: "relative", width: mobile ? 112 : 132, height: mobile ? 112 : 132, borderRadius: "50%", background: "radial-gradient(circle at 50% 38%, #ffffff, #f4edf0 72%, #ece2e7 100%)", boxShadow: "0 8px 18px -8px rgba(160,125,140,0.5), inset 0 1px 2px rgba(255,255,255,0.95), inset 0 -3px 8px rgba(175,145,160,0.2)" }}>
             <WheelBtn label="REQUIEM" onClick={onToggleOpen} style={{ top: 9, left: 0, right: 0, height: 26, fontSize: 7, letterSpacing: "0.18em" }} />
             <WheelBtn label="◄◄" onClick={onPrev} style={{ left: 6, top: 0, bottom: 0, width: 34 }} />
             <WheelBtn label="►►" onClick={onNext} style={{ right: 6, top: 0, bottom: 0, width: 34 }} />
@@ -741,8 +761,7 @@ function WheelBtn({ label, onClick, style }: { label: string; onClick: () => voi
 }
 
 // ─── 3D: cherry blossom petal particles ───
-function BlossomPetals({ treePosition }: { treePosition: [number, number, number] }) {
-  const count = 60;
+function BlossomPetals({ treePosition, count = 60 }: { treePosition: [number, number, number]; count?: number }) {
   const meshRef = useRef<THREE.InstancedMesh>(null);
   const petalData = useMemo(() => {
     const data = [];
@@ -965,9 +984,9 @@ function CarModel({ transform, screenPosRef }: {
 }
 
 // ─── 3D: scene with camera ───
-function SceneContent({ carTransform = DEFAULT_CAR, treeTransform = DEFAULT_TREE, cameraState = DEFAULT_CAMERA, carScreenPosRef }: {
+function SceneContent({ carTransform = DEFAULT_CAR, treeTransform = DEFAULT_TREE, cameraState = DEFAULT_CAMERA, carScreenPosRef, mobile }: {
   carTransform?: ModelTransform; treeTransform?: ModelTransform; cameraState?: CameraState;
-  carScreenPosRef?: { current: { x: number; y: number } | null };
+  carScreenPosRef?: { current: { x: number; y: number } | null }; mobile?: boolean;
 }) {
   const { camera } = useThree();
   const car = carTransform ?? DEFAULT_CAR;
@@ -993,7 +1012,7 @@ function SceneContent({ carTransform = DEFAULT_CAR, treeTransform = DEFAULT_TREE
         <CarGlow position={car.position} />
         <CarModel transform={car} screenPosRef={carScreenPosRef} />
         <TreeModel transform={tree} />
-        <BlossomPetals treePosition={tree.position} />
+        <BlossomPetals treePosition={tree.position} count={mobile ? 30 : 60} />
       </Suspense>
     </>
   );
@@ -1026,12 +1045,15 @@ function useCanvasOverlays(carScreenPosRef?: { current: { x: number; y: number }
 
   useEffect(() => {
     const onMouseMove = (e: MouseEvent) => { mouseRef.current = { x: e.clientX, y: e.clientY }; };
+    const onTouchMove = (e: TouchEvent) => { if (e.touches[0]) mouseRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY }; };
     window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("touchmove", onTouchMove, { passive: true });
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     const W = () => window.innerWidth;
     const H = () => window.innerHeight;
 
-    petalsRef.current = Array.from({ length: 18 }, () => mkPetal(W(), H(), true));
+    const isMobile = W() <= 768;
+    petalsRef.current = Array.from({ length: isMobile ? 10 : 18 }, () => mkPetal(W(), H(), true));
 
     const sizeCanvases = () => {
       [bgRef, petalRef].forEach((r) => {
@@ -1148,7 +1170,7 @@ function useCanvasOverlays(carScreenPosRef?: { current: { x: number; y: number }
     raf = requestAnimationFrame(loop);
 
     window.addEventListener("resize", sizeCanvases);
-    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", sizeCanvases); window.removeEventListener("mousemove", onMouseMove); };
+    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", sizeCanvases); window.removeEventListener("mousemove", onMouseMove); window.removeEventListener("touchmove", onTouchMove); };
   }, []);
 
   return { bgRef, petalRef };
@@ -1156,6 +1178,7 @@ function useCanvasOverlays(carScreenPosRef?: { current: { x: number; y: number }
 
 // ─── main scene ───
 export default function Scene() {
+  const mobile = useIsMobile();
   const carScreenPosRef = useRef<{ x: number; y: number } | null>(null);
   const burstRef = useRef(false);
   const { bgRef, petalRef } = useCanvasOverlays(carScreenPosRef, burstRef);
@@ -1255,6 +1278,7 @@ export default function Scene() {
             treeTransform={DEFAULT_TREE}
             cameraState={DEFAULT_CAMERA}
             carScreenPosRef={carScreenPosRef}
+            mobile={mobile}
           />
         </Canvas>
       </div>
@@ -1301,42 +1325,50 @@ export default function Scene() {
       <div style={{ position: "absolute", inset: 0, zIndex: 10, pointerEvents: "none" }}>
 
         {/* TOP LEFT: pink square + title */}
-        <div style={{ position: "absolute", top: "clamp(28px,4.4vh,48px)", left: "clamp(30px,3.4vw,56px)" }}>
-          <span style={{ width: 13, height: 13, background: "#f0567f", display: "block", marginBottom: 14 }} />
+        <div style={{ position: "absolute", top: mobile ? 20 : "clamp(28px,4.4vh,48px)", left: mobile ? 16 : "clamp(30px,3.4vw,56px)" }}>
+          <span style={{ width: mobile ? 10 : 13, height: mobile ? 10 : 13, background: "#f0567f", display: "block", marginBottom: mobile ? 10 : 14 }} />
           <h1 style={{
             fontFamily: "var(--font-space-grotesk), sans-serif",
-            fontSize: "clamp(28px,3.8vw,48px)", fontWeight: 600,
+            fontSize: mobile ? 22 : "clamp(28px,3.8vw,48px)", fontWeight: 600,
             lineHeight: 1, color: "#2a2226", margin: 0, letterSpacing: "-0.02em",
           }}>
             wWHIT<span style={{ display: "inline-block", transform: "scaleX(-1)" }}>e</span>{" "}
             <span style={{ color: "#f0567f" }}>+</span> PINk
           </h1>
           {/* vertical kanji */}
+          {!mobile && (
+            <div style={{
+              writingMode: "vertical-rl",
+              fontFamily: "var(--font-shippori), serif",
+              fontSize: "clamp(13px,1.2vw,17px)", letterSpacing: "0.42em",
+              color: "#d4c0c8", marginTop: 28, userSelect: "none",
+            }}>
+              空のフレーム
+            </div>
+          )}
+        </div>
+
+        {/* TOP CENTER: nav glyphs — hidden on mobile to save space */}
+        {!mobile && (
           <div style={{
-            writingMode: "vertical-rl",
-            fontFamily: "var(--font-shippori), serif",
-            fontSize: "clamp(13px,1.2vw,17px)", letterSpacing: "0.42em",
-            color: "#d4c0c8", marginTop: 28, userSelect: "none",
+            position: "absolute", top: "clamp(30px,4.4vh,48px)", left: "50%", transform: "translateX(-50%)",
+            display: "flex", alignItems: "center", gap: 20, color: "#d6c5cc",
           }}>
-            空のフレーム
+            <span style={{ width: 9, height: 9, background: "#f7b9cb", display: "inline-block" }} />
+            <span style={{ fontSize: 12 }}>▦</span>
+            <span style={{ fontSize: 12 }}>◯</span>
+            <span style={{ fontSize: 12 }}>✕</span>
           </div>
-        </div>
+        )}
 
-        {/* TOP CENTER: nav glyphs */}
+        {/* iPod player — top-right on desktop, below title on mobile */}
         <div style={{
-          position: "absolute", top: "clamp(30px,4.4vh,48px)", left: "50%", transform: "translateX(-50%)",
-          display: "flex", alignItems: "center", gap: 20, color: "#d6c5cc",
-        }}>
-          <span style={{ width: 9, height: 9, background: "#f7b9cb", display: "inline-block" }} />
-          <span style={{ fontSize: 12 }}>▦</span>
-          <span style={{ fontSize: 12 }}>◯</span>
-          <span style={{ fontSize: 12 }}>✕</span>
-        </div>
-
-        {/* TOP RIGHT: iPod player */}
-        <div style={{
-          position: "absolute", top: "clamp(28px,4.4vh,46px)", right: "clamp(30px,3.4vw,56px)",
-          display: "flex", flexDirection: "column", alignItems: "flex-end",
+          position: "absolute",
+          ...(mobile
+            ? { top: 72, left: 16, right: "auto" }
+            : { top: "clamp(28px,4.4vh,46px)", right: "clamp(30px,3.4vw,56px)" }
+          ),
+          display: "flex", flexDirection: "column", alignItems: mobile ? "flex-start" : "flex-end",
           pointerEvents: "auto",
         }}>
           <Player
@@ -1346,30 +1378,36 @@ export default function Scene() {
             onPrev={handlePrev}
             onNext={handleNext}
             onCenterClick={handleCenterClick}
+            mobile={mobile}
           />
         </div>
 
         {/* LEFT CENTER: synced lyrics */}
-        <SyncedLyrics lyrics={track.lyrics} currentTime={currentTime} playing={playing} />
+        <SyncedLyrics lyrics={track.lyrics} currentTime={currentTime} playing={playing} mobile={mobile} />
 
         {/* RIGHT CENTER: project origin */}
-        <RightPanel />
+        <RightPanel mobile={mobile} />
 
         {/* BOTTOM LEFT: minimal caption */}
-        <div style={{
-          position: "absolute", bottom: "clamp(30px,5vh,54px)", left: "clamp(30px,3.4vw,56px)",
-          fontFamily: "var(--font-space-mono), monospace", fontSize: 10,
-          letterSpacing: "0.34em", color: "#cbb2bb", lineHeight: 1.9,
-        }}>
-          TESTAROSSA<br />· WHITE ·
-        </div>
+        {!mobile && (
+          <div style={{
+            position: "absolute", bottom: "clamp(30px,5vh,54px)", left: "clamp(30px,3.4vw,56px)",
+            fontFamily: "var(--font-space-mono), monospace", fontSize: 10,
+            letterSpacing: "0.34em", color: "#cbb2bb", lineHeight: 1.9,
+          }}>
+            TESTAROSSA<br />· WHITE ·
+          </div>
+        )}
 
         {/* quote */}
         <div style={{
-          position: "absolute", bottom: "clamp(30px,5vh,54px)", left: "50%", transform: "translateX(-50%)",
+          position: "absolute",
+          bottom: mobile ? 50 : "clamp(30px,5vh,54px)",
+          left: "50%", transform: "translateX(-50%)",
           fontFamily: "var(--font-space-mono), monospace",
-          fontSize: "clamp(8px, 1vw, 11px)",
+          fontSize: mobile ? 7 : "clamp(8px, 1vw, 11px)",
           letterSpacing: "0.18em", color: "#cbb2bb", textAlign: "center",
+          whiteSpace: mobile ? "nowrap" : undefined,
         }}>
           <span key={quotePulseKey} style={{
             display: "inline-block",
@@ -1380,17 +1418,24 @@ export default function Scene() {
         </div>
 
         {/* BOTTOM RIGHT: ON AIR */}
-        <div style={{ position: "absolute", bottom: "clamp(32px,5.2vh,56px)", right: "clamp(30px,3.4vw,58px)", pointerEvents: "auto" }}>
+        <div style={{
+          position: "absolute",
+          ...(mobile
+            ? { bottom: 16, left: "50%", transform: "translateX(-50%)", right: "auto" }
+            : { bottom: "clamp(32px,5.2vh,56px)", right: "clamp(30px,3.4vw,58px)" }
+          ),
+          pointerEvents: "auto",
+        }}>
           <div style={{
-            display: "inline-flex", alignItems: "center", gap: 10,
-            padding: "10px 20px", borderRadius: 100,
+            display: "inline-flex", alignItems: "center", gap: mobile ? 7 : 10,
+            padding: mobile ? "7px 14px" : "10px 20px", borderRadius: 100,
             background: "rgba(255,255,255,0.6)",
             backdropFilter: "blur(16px) saturate(150%)", WebkitBackdropFilter: "blur(16px) saturate(150%)",
             border: "1px solid rgba(255,255,255,0.85)",
             boxShadow: "0 10px 24px -14px rgba(170,120,145,0.35)",
           }}>
-            <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#f0567f", display: "inline-block", animation: "wwBlink 1.6s steps(1) infinite" }} />
-            <span style={{ fontFamily: "var(--font-space-mono), monospace", fontSize: 10, letterSpacing: "0.36em", color: "#9a838e" }}>ON AIR</span>
+            <span style={{ width: mobile ? 6 : 7, height: mobile ? 6 : 7, borderRadius: "50%", background: "#f0567f", display: "inline-block", animation: "wwBlink 1.6s steps(1) infinite" }} />
+            <span style={{ fontFamily: "var(--font-space-mono), monospace", fontSize: mobile ? 8 : 10, letterSpacing: "0.36em", color: "#9a838e" }}>ON AIR</span>
           </div>
         </div>
       </div>

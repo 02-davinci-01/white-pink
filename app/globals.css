@@ -83,3 +83,15 @@ body {
     text-shadow: none;
   }
 }
+
+/* ─── Mobile adaptations ─── */
+@media (max-width: 768px) {
+  @keyframes wwTypewriter {
+    from {
+      width: 0;
+    }
+    to {
+      width: 22ch;
+    }
+  }
+}
