@@ -49,7 +49,7 @@ body {
     width: 0;
   }
   to {
-    width: 28ch;
+    width: 32ch;
   }
 }
 
@@ -84,14 +84,3 @@ body {
   }
 }
 
-/* ─── Mobile adaptations ─── */
-@media (max-width: 768px) {
-  @keyframes wwTypewriter {
-    from {
-      width: 0;
-    }
-    to {
-      width: 22ch;
-    }
-  }
-}
